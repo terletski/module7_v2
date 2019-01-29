@@ -1,0 +1,52 @@
+[
+    {
+        "modelName": "BMW",
+        "color": "Black",
+        "user_id": 1
+    },
+    {
+        "modelName": "AUDI",
+        "color": "Red",
+        "user_id": 2
+    },
+    {
+        "modelName": "Lada",
+        "color": "White",
+        "user_id": 3
+    },
+    {
+        "modelName": "Range",
+        "color": "White",
+        "user_id": 4
+    },
+    {
+        "modelName": "WV",
+        "color": "Red",
+        "user_id": 5
+    },
+    {
+        "modelName": "Honda",
+        "color": "Grey",
+        "user_id": 6
+    },
+    {
+        "modelName": "Acura",
+        "color": "Red",
+        "user_id": 7
+    },
+    {
+        "modelName": "Bentley",
+        "color": "Blue",
+        "user_id": 8
+    },
+    {
+        "modelName": "Bugatti",
+        "color": "Green",
+        "user_id": 9
+    },
+    {
+        "modelName": "Ferrari",
+        "color": "Red",
+        "user_id": 10
+    }
+]
