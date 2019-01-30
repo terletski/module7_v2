@@ -2,7 +2,17 @@ const MongoClient = require(`mongodb`).MongoClient;
 const users = require(`./models/users.json`);
 const cars = require(`./models/cars.json`);
 
-async function findDocument() {
+async function findAllDocuments () {
+  const client = await getClient();
+  const db = await getDB(client);
+  db.collection(`users`).find({}).toArray((err, result) => {
+    if (err) throw err;
+    console.log(result);
+  });
+  client.close();
+};
+
+async function findDocument () {
   const client = await getClient();
   const db = await getDB(client);
   const query = { address: /^S/ };
@@ -13,7 +23,7 @@ async function findDocument() {
   client.close();
 };
 
-async function deleteDocument() {
+async function deleteDocument () {
   const client = await getClient();
   const db = await getDB(client);
   const myquery = { address: `Mountain 21` };
@@ -25,7 +35,7 @@ async function deleteDocument() {
   client.close();
 };
 
-async function dropCollection() {
+async function dropCollection () {
   const client = await getClient();
   const db = await getDB(client);
   db.collection(`users`).drop((err, delOK) => {
@@ -35,7 +45,7 @@ async function dropCollection() {
   client.close();
 };
 
-async function getDataFromJson() {
+async function getDataFromJson () {
   const client = await getClient();
   const db = await getDB(client);
   db.collection(`users`).insertMany(users, (err) => {
@@ -55,9 +65,9 @@ async function getDataFromJson() {
   client.close();
 };
 
-async function getQuery() {
+async function getQuery () {
   const client = await getClient();
-  const db = await getDB(client)
+  const db = await getDB(client);
   const mysort = { name: 1 };
   const result = await db.collection(`users`).aggregate([
     {
@@ -76,20 +86,20 @@ async function getQuery() {
   return result;
 };
 
-async function getClient() {
+async function getClient () {
   const url = `mongodb://localhost:27017/`;
   const client = MongoClient.connect(url, { useNewUrlParser: true });
   console.log(`Successful server connection`);
   return client;
 };
 
-async function getDB(client) {
+async function getDB (client) {
   const dbName = `usersdb`;
   const db = client.db(dbName);
   return db;
 };
 
-async function getTitle() {
+async function getTitle () {
   let object = await getQuery();
   let arrayTitle = [];
   for (let key in object[0]) {
@@ -98,7 +108,7 @@ async function getTitle() {
   return arrayTitle;
 };
 
-async function getBody() {
+async function getBody () {
   let object = await getQuery();
   let arrayBody = [];
   object.forEach(element => {
@@ -111,7 +121,7 @@ async function getBody() {
   return arrayBody;
 };
 
-async function getData() {
+async function getData () {
   const body = await getBody();
   const title = await getTitle();
   body.unshift(title);
@@ -119,6 +129,7 @@ async function getData() {
 };
 
 module.exports = {
+  findAllDocuments,
   findDocument,
   deleteDocument,
   dropCollection,

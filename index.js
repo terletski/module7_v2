@@ -5,11 +5,14 @@ const methods = process.argv[2];
 
 async function mongoDbMethods () {
   switch (methods) {
+    case `findAllDocuments`:
+      mongo.findAllDocuments();
+      break;
     case `findDocument`:
-      mongo.dropCollection();
+      mongo.findDocument();
       break;
     case `deleteDocument`:
-      mongo.dropCollection();
+      mongo.deleteDocument();
       break;
     case `drop`:
       mongo.dropCollection();
@@ -22,7 +25,7 @@ async function mongoDbMethods () {
       const client = auth.authorize();
       sheets.writeToSheet(client, data);
       break;
-    default: console.log(`Incorrect method`)
+    default: console.log(`Incorrect method`);
       client.close();
       break;
   }
