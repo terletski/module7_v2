@@ -1,6 +1,6 @@
 const MongoClient = require(`mongodb`).MongoClient;
-const users = require(`./models/users.json`);
-const cars = require(`./models/cars.json`);
+const users = require(`../models/users.json`);
+const cars = require(`../models/cars.json`);
 
 async function findAllDocuments () {
   const client = await getClient();

@@ -3,10 +3,10 @@ const readline = require(`readline-sync`);
 const { google } = require(`googleapis`);
 
 const SCOPES = [`https://www.googleapis.com/auth/spreadsheets`];
-const TOKEN_PATH = `./token.json`;
+const TOKEN_PATH = `../resources/token.json`;
 
 function authorize () {
-  const credentials = require(`./credentials.json`);
+  const credentials = require(`../resources/credentials.json`);
   // eslint-disable-next-line camelcase
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
