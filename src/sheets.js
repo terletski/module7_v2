@@ -1,7 +1,5 @@
 const { google } = require(`googleapis`);
-const sheets = google.sheets(`v4`);
 const spreadsheetId = `1mok1ObFRhS8jqP9KQ_MdHvpyFQr7ehsen_KWd8dtHIA`;
-const fs = require(`fs`);
 const client = require(`./authorization.js`);
 
 /**
@@ -9,7 +7,8 @@ const client = require(`./authorization.js`);
  * @see https://docs.google.com/spreadsheets/d/1mok1ObFRhS8jqP9KQ_MdHvpyFQr7ehsen_KWd8dtHIA/edit#gid=0
  */
 
-function writeToSheet (auth, data) {
+async function writeToSheet (auth, data) {
+  const sheets = await getResponse();
   const request = {
     spreadsheetId,
     range: `A1:F`,
@@ -20,39 +19,35 @@ function writeToSheet (auth, data) {
     auth: auth
   };
   sheets.spreadsheets.values.update(request, function (err) {
-    if (err) console.error(err);
+    if (err) throw err;
   });
 };
 
-function readFromSheets (auth) {
-  const request = {
-    spreadsheetId,
-    range: `A1:F`,
-    valueRenderOption: `UNFORMATTED_VALUE`,
-    auth: auth
-  };
-  sheets.spreadsheets.values.get(request, function (err, response) {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    const data = response.data.values;
-    const curData = JSON.stringify(data);
-    fs.writeFileSync(`./test/DB.json`, curData);
-    return curData;
-  });
-};
-
-async function getStatus (auth) {
+async function readFromSheets () {
   const sheets = await getResponse();
-  const request = {
-    spreadsheetId,
-    range: `A1:F`,
-    valueRenderOption: `FORMATTED_VALUE`,
-    auth: auth
-  };
-  const data = await sheets.spreadsheets.values.get(request);
-  return data.status;
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId, range: `A1:F`, valueRenderOption: `UNFORMATTED_VALUE`
+  });
+  const data = response.data.values;
+  return data;
+};
+
+async function getStatus () {
+  const sheets = await getResponse();
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId, range: `A1:F`, valueRenderOption: `UNFORMATTED_VALUE`
+  });
+  const data = response.status;
+  return data;
+};
+
+async function getHeaders () {
+  const sheets = await getResponse();
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId, range: `A1:F`, valueRenderOption: `UNFORMATTED_VALUE`
+  });
+  const data = JSON.stringify(response.headers);
+  return data;
 };
 
 async function clear (auth) {
@@ -73,19 +68,35 @@ async function getResponse () {
 }
 
 async function getIncorrectedResponce () {
-  const sheets = google.sheets({ version: `v4` });
-  const request = {
-    spreadsheetId,
-    range: `data`,
-    valueRenderOption: `FORMATTED_VALUE` };
-  const data = await sheets.spreadsheets.values.get(request);
-  return data.status;
+  const sheets = await getResponse();
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId, range: `Z1:Z`, valueRenderOption: `UNFORMATTED_VALUE`
+  });
+  const data = response.data.values;
+  return data;
 };
+
+async function writeEmptyRange (data, auth) {
+  const sheets = await getResponse();
+  const resource = { data };
+  return sheets.spreadsheets.values.update({
+    spreadsheetId, valueInputOption: `RAW`, resource, auth: auth });
+}
+
+async function writeIncorrectspreadsheetId (data, auth) {
+  const sheets = await getResponse();
+  const resource = { data };
+  return sheets.spreadsheets.values.update({
+    range: `A1:F`, valueInputOption: `RAW`, resource, auth: auth });
+}
 
 module.exports = {
   writeToSheet,
   readFromSheets,
   getStatus,
   clearAll,
-  getIncorrectedResponce
+  getIncorrectedResponce,
+  getHeaders,
+  writeEmptyRange,
+  writeIncorrectspreadsheetId
 };

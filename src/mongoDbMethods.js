@@ -89,7 +89,6 @@ async function getQuery () {
 async function getClient () {
   const url = `mongodb://localhost:27017/`;
   const client = MongoClient.connect(url, { useNewUrlParser: true });
-  console.log(`Successful server connection`);
   return client;
 };
 
